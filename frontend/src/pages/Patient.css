@@ -1,0 +1,243 @@
+/* Global styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f5f7;
+  color: #333;
+}
+
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 220px;
+  background: #fff;
+  padding: 30px 20px;
+  border-right: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar h2 {
+  margin-bottom: 40px;
+  font-size: 1.5rem;
+  color: #111;
+}
+
+.sidebar nav button {
+  display: block;
+  margin-bottom: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #6b21a8; /* purple */
+  font-weight: bold;
+}
+
+.logout-btn {
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}
+
+/* Main content */
+.main-content {
+  flex: 1;
+  padding: 30px;
+}
+
+header h1 {
+  margin: 0 0 20px 0;
+  font-size: 2rem;
+}
+
+/* Grid for form + appointments */
+.content-grid {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* Form container */
+.appointment-form-container {
+  flex: 2;
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.appointment-form-container h2 {
+  margin-bottom: 20px;
+}
+
+.appointment-form-container form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+}
+
+.appointment-form-container label {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 200px;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.appointment-form-container input,
+.appointment-form-container select {
+  padding: 8px 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.appointment-form-container button {
+  padding: 10px 20px;
+  background: #6b21a8;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.appointment-form-container button:hover {
+  background: #5b189b;
+}
+
+/* Appointments table container */
+.appointments-table-container {
+  flex: 1;
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+  min-width: 300px;
+}
+
+.appointments-table-container h2 {
+  margin-bottom: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+table th, table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+table th {
+  background: #f3f4f6;
+}
+
+.cancel-btn {
+  padding: 5px 10px;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.cancel-btn:hover {
+  background: #dc2626;
+}
+
+.disabled-btn {
+  background: #ccc;
+  color: #666;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: not-allowed;
+}
+
+/* Status badges */
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.status-pending { background: #fbbf24; }
+.status-confirmed { background: #3b82f6; }
+.status-completed { background: #10b981; }
+.status-cancelled { background: #ef4444; }
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal {
+  background: #fff;
+  padding: 30px;
+  border-radius: 10px;
+  width: 350px;
+  text-align: center;
+}
+
+.modal h3 {
+  margin-top: 0;
+}
+
+.modal-actions {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-actions button {
+  padding: 8px 15px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-actions button:first-child {
+  background: #ccc;
+}
+
+.modal-actions button:last-child {
+  background: #6b21a8;
+  color: #fff;
+}
+
+.modal-actions button:last-child:hover {
+  background: #5b189b;
+}
