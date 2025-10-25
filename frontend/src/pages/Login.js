@@ -1,170 +1,197 @@
-// import React, { useState } from "react";
-// import api from "../api";
-// import { useNavigate } from "react-router-dom";
-
-// export default function Login() {
-//   const [role, setRole] = useState("patient");
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-//   const navigate = useNavigate();
-
-//   const handleLogin = async (e) => {
-//     e.preventDefault();
-//     try {
-//       const res = await api.post("/auth/login", { emailOrContact: email, password, role });
-//       localStorage.setItem("token", res.data.token);
-//       localStorage.setItem("role", role);
-//       if (role === "doctor") navigate("/doctor");
-//       else if (role === "admin") navigate("/admin");
-//       else navigate("/patient");
-//     } catch (err) {
-//       alert(err.response?.data?.message || "Login failed");
-//     }
-//   };
-
-//   return (
-//     <div style={{ textAlign: "center", marginTop: 50 }}>
-//       <h2>Hospital Management System</h2>
-//       <form onSubmit={handleLogin}>
-//         <label>Role:</label><br/>
-//         <select value={role} onChange={(e) => setRole(e.target.value)}>
-//           <option value="patient">Patient</option>
-//           <option value="doctor">Doctor</option>
-//           <option value="admin">Admin</option>
-//         </select><br/><br/>
-//         <input placeholder="Email" value={email} onChange={(e)=>setEmail(e.target.value)} /><br/><br/>
-//         <input type="password" placeholder="Password" value={password} onChange={(e)=>setPassword(e.target.value)} /><br/><br/>
-//         <button type="submit">Login</button>
-//       </form>
-//     </div>
-//   );
-// }
-
-
 import React, { useState } from "react";
-import api from "../api"; // Axios instance
 import { useNavigate } from "react-router-dom";
-import "./Login.css"; // We'll create this CSS based on your HTML styling
+import axios from "axios";
+import "./Login.css";
 
 export default function Login() {
+  const navigate = useNavigate();
   const [role, setRole] = useState("patient");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    emailOrContact: "",
+    password: ""
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    if (!email || !password) {
-      setError("Please fill in all fields");
-      return;
-    }
     setLoading(true);
+
     try {
-      const res = await api.post("/auth/login", {
-        emailOrContact: email,
-        password,
-        role,
+      const response = await axios.post("http://localhost:5000/api/auth/login", {
+        role: role,
+        emailOrContact: formData.emailOrContact,
+        password: formData.password
       });
-      localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", role);
+
+      // Store token and user info
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("userName", response.data.name || "User");
+      localStorage.setItem("userRole", response.data.role);
+
       // Navigate based on role
-      if (role === "doctor") navigate("/doctor");
-      else if (role === "admin") navigate("/admin");
-      else navigate("/patient");
+      if (response.data.role === "doctor" || response.data.role === "admin") {
+        navigate("/doctor");
+      } else if (response.data.role === "patient") {
+        navigate("/patient");
+      }
     } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || "Login failed");
+      setError(err.response?.data?.message || "Login failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
   return (
     <div className="login-page">
-      <div className="card">
-        <div className="header">
-          <div className="logo">
-            <svg
-              className="logo-icon"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <span>TEAM UTPA</span>
+      <div className="login-container">
+        {/* Left Side - Branding */}
+        <div className="login-left">
+          <div className="branding">
+            <div className="logo-large">
+              <span className="logo-icon-large">🏥</span>
+              <h1>TEAM UTPA</h1>
+            </div>
+            <p className="tagline">Modern Hospital Management System</p>
+            <div className="features">
+              <div className="feature-item">
+                <span className="feature-icon">✅</span>
+                <span>Easy Appointment Booking</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">✅</span>
+                <span>Secure Patient Records</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">✅</span>
+                <span>24/7 Access</span>
+              </div>
+            </div>
           </div>
-          <h1>Hospital Management System</h1>
-          <p>Sign in to your account</p>
         </div>
 
-        <form onSubmit={handleLogin} className="login-form">
-          {/* Role Selection */}
-          <div className="form-group">
-            <label>Role</label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              required
-            >
-              <option value="patient">Patient</option>
-              <option value="doctor">Doctor</option>
-              <option value="admin">Admin</option>
-            </select>
-          </div>
+        {/* Right Side - Login Form */}
+        <div className="login-right">
+          <div className="login-card">
+            <div className="login-header">
+              <h2>Welcome Back</h2>
+              <p>Login to access your dashboard</p>
+            </div>
 
-          {/* Email */}
-          <div className="form-group">
-            <label>Email or Contact</label>
-            <input
-              type="text"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter your email or contact number"
-              required
-            />
-          </div>
+            {/* Role Selection */}
+            <div className="role-selector">
+              <button
+                type="button"
+                className={`role-btn ${role === "patient" ? "active" : ""}`}
+                onClick={() => setRole("patient")}
+              >
+                <span className="role-icon">👤</span>
+                <span>Patient</span>
+              </button>
+              <button
+                type="button"
+                className={`role-btn ${role === "doctor" ? "active" : ""}`}
+                onClick={() => setRole("doctor")}
+              >
+                <span className="role-icon">👨‍⚕️</span>
+                <span>Doctor</span>
+              </button>
+              <button
+                type="button"
+                className={`role-btn ${role === "admin" ? "active" : ""}`}
+                onClick={() => setRole("admin")}
+              >
+                <span className="role-icon">⚙️</span>
+                <span>Admin</span>
+              </button>
+            </div>
 
-          {/* Password */}
-          <div className="form-group">
-            <label>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              required
-            />
-          </div>
-
-          {/* Error */}
-          {error && <div className="error-message">{error}</div>}
-
-          {/* Submit Button */}
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? (
-              <>
-                Logging in...
-                <span className="loading-spinner"></span>
-              </>
-            ) : (
-              "Log In"
+            {/* Error Message */}
+            {error && (
+              <div className="error-alert">
+                <span className="error-icon">⚠️</span>
+                <span>{error}</span>
+              </div>
             )}
-          </button>
-        </form>
 
-        <p className="signup-text">
-          Need an account?{" "}
-          <a href="#" className="signup-link">
-            Contact Administrator
-          </a>
-        </p>
+            {/* Login Form */}
+            <form onSubmit={handleSubmit} className="login-form">
+              <div className="form-group">
+                <label htmlFor="emailOrContact">Email or Phone</label>
+                <input
+                  type="text"
+                  id="emailOrContact"
+                  name="emailOrContact"
+                  placeholder="Enter your email or phone number"
+                  value={formData.emailOrContact}
+                  onChange={handleChange}
+                  required
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="form-options">
+                <label className="remember-me">
+                  <input type="checkbox" />
+                  <span>Remember me</span>
+                </label>
+                <a href="#" className="forgot-password">Forgot password?</a>
+              </div>
+
+              <button type="submit" className="login-btn" disabled={loading}>
+                {loading ? (
+                  <>
+                    <span className="spinner-small"></span>
+                    <span>Logging in...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Login</span>
+                    <span>→</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            {/* Demo Credentials */}
+            <div className="demo-credentials">
+              <p className="demo-title">Demo Credentials:</p>
+              <div className="demo-list">
+                <div className="demo-item">
+                  <strong>Patient:</strong> patient@example.com / patient123
+                </div>
+                <div className="demo-item">
+                  <strong>Doctor:</strong> doctor@example.com / doctor123
+                </div>
+                <div className="demo-item">
+                  <strong>Admin:</strong> admin@example.com / admin123
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
